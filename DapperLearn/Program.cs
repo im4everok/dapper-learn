@@ -1,11 +1,20 @@
+using DapperLearn.CustomEndpoints;
+using DapperLearn.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+    var connectionString = configuration.GetConnectionString("DefaultConnection") ??
+        throw new ApplicationException("Connection string is null");
+
+    return new SqlConnectionFactory(connectionString);
+});
 
 var app = builder.Build();
 
@@ -18,8 +27,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.MapCustomerEndpoints();
 
 app.Run();
