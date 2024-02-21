@@ -23,7 +23,7 @@ namespace DapperLearn.CustomEndpoints
 
                 return Results.Ok(customers);
             });
-
+            Console.WriteLine(123);
             group.MapGet("{id}", async (int id, 
                 SqlConnectionFactory sqlConnectionFactory) =>
             {
